@@ -3,7 +3,7 @@ _G.Aiming = {
     Aiming = "Namecall", -- "Namecall", "Index", "OldNyula" -- OldNyula is an FPS killer
     Mode = "Toggle", -- "Toggle" or "Hold" or "Always"
     ["Face-Target"] = true, -- Faces the person you're locked onto (If you use with macro it'll macro for you)
-    Notifs = false, -- Uses normal roblox notifications in the bottom right
+    Notifs = true, -- Uses normal roblox notifications in the bottom right
     Chat = false, -- "Locked Onto: USERNAME" | "Unlocked!"
     View = false, -- Views when you lock on and unlock
     SelfLockOn = false,
@@ -82,7 +82,7 @@ _G.Aiming = {
         },
     },
     Resolvers = {
-        Resolver = "V2", -- "Off", "V1", "V2","Movement", "Movement V2", MUST BE SET TO "Off" IF NOT USING A RESOLVER OR THERE WILL BE NO PREDICTION
+        Resolver = "V2", -- "On", "V1", "V2","Movement", "Movement V2", MUST BE SET TO "Off" IF NOT USING A RESOLVER OR THERE WILL BE NO PREDICTION
         ["V1-Delay"] = 0.085,
         ["V2-Smoothing"] = 8,
         ["Movement-V2-Smoothing"] = 8, -- New In V5
