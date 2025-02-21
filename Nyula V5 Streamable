@@ -15,7 +15,7 @@ _G.Aiming = {
 
         Parts = {"HumanoidRootPart"}, -- "Head", "HumanoidRootPart", "LowerTorso", {"Head","HumanoidRootPart","LowerTorso"}, "All", {"All"}
 
-        Smoothing = "New", -- "New" or "Classic" or "Off" <- Off IS THE MOST BLATANT, Classic Doesn't work on UWP
+        Smoothing = "Off", -- "Off" or "Classic" or "Off" <- Off IS THE MOST BLATANT, Classic Doesn't work on UWP
         Smoothness = 0.85,
 
         Prediction = 0.12654, -- Linked up with auto pred
