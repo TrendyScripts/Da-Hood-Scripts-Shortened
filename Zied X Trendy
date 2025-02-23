@@ -1,6 +1,6 @@
 local Config = {
     CamlockSettings = {
-        Smoothness = 3,
+        Smoothness = 5,
         MaxLockDistance = 1000,
         AutoUnlockOnKill = true,
         PredictionStrength = 0.1
