@@ -1,0 +1,6 @@
+-- do not change this or script wont work
+
+
+getgenv()._ = " Anti V3 IF YOU BOUGHT THIS YOU GOT SCAMMED /                      https://discord.gg/antiv2 "
+
+loadstring(game:HttpGet("https://raw.githubusercontent.com/flanchhh/Antiv3/refs/heads/main/AntiV3.lua"))()
