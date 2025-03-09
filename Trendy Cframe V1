@@ -1,0 +1,59 @@
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local hrp = character:WaitForChild("HumanoidRootPart")
+local runService = game:GetService("RunService")
+local speed = 70
+local moving = false
+
+-- Create GUI Button
+local screenGui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+local button = Instance.new("TextButton")
+button.Size = UDim2.new(0, 100, 0, 50)
+button.Position = UDim2.new(0, 50, 0, 50)
+button.Text = "Toggle CFrame"
+button.Parent = screenGui
+button.BackgroundColor3 = Color3.new(1, 0, 0)
+
+-- Make Button Draggable
+local dragging, dragInput, dragStart, startPos
+
+button.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = true
+        dragStart = input.Position
+        startPos = button.Position
+    end
+end)
+
+button.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement then
+        dragInput = input
+    end
+end)
+
+button.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = false
+    end
+end)
+
+game:GetService("UserInputService").InputChanged:Connect(function(input)
+    if input == dragInput and dragging then
+        local delta = input.Position - dragStart
+        button.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+    end
+end)
+
+-- Toggle CFrame Movement
+local function moveCharacter()
+    if moving then
+        hrp.CFrame = hrp.CFrame + hrp.CFrame.LookVector * speed / 60
+    end
+end
+
+button.MouseButton1Click:Connect(function()
+    moving = not moving
+    button.BackgroundColor3 = moving and Color3.new(0, 1, 0) or Color3.new(1, 0, 0)
+end)
+
+runService.RenderStepped:Connect(moveCharacter)
