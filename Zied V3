@@ -1,0 +1,180 @@
+getgenv().Zied = {
+    ["Main"] = {
+        ["Prediction"] = 0.13192,
+        ["HorizontalPrediction"] = 0.13476219,
+        ["VerticalPrediction"] = 0.13712945,
+        ["AimPart"] = "UpperTorso",
+        ["ToggleKey"] = "q"
+    },
+    ["Misc"] = {
+        ["AutoAir"] = true,
+        ["AirDelay"] = 0.2
+    },
+    ["Speed"] = {
+        ["Enabled"] = false,
+        ["SpeedValue"] = 70
+    }
+}
+
+-- Adonis Bypass (Prevents getting kicked)
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Pixeluted/adoniscries/main/Source.lua", true))()
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local StarterGui = game:GetService("StarterGui")
+local LocalPlayer = Players.LocalPlayer
+local Mouse = LocalPlayer:GetMouse()
+local CamlockState = false
+local AutoAirState = false
+local SpeedState = false
+
+local function Notify(title, text)
+    StarterGui:SetCore("SendNotification", {
+        Title = title;
+        Text = text;
+        Duration = 2;
+    })
+end
+
+local function FindNearestEnemy()
+    local ClosestDistance, ClosestPlayer = math.huge, nil
+    local CenterPosition = Vector2.new(
+        game:GetService("GuiService"):GetScreenResolution().X / 2,
+        game:GetService("GuiService"):GetScreenResolution().Y / 2
+    )
+
+    for _, Player in ipairs(Players:GetPlayers()) do
+        if Player ~= LocalPlayer then
+            local Character = Player.Character
+            if Character and Character:FindFirstChild(Zied.Main.AimPart) and Character:FindFirstChildOfClass("Humanoid") then
+                local Humanoid = Character:FindFirstChildOfClass("Humanoid")
+                if Humanoid.Health > 0 then
+                    local Position, IsVisible = workspace.CurrentCamera:WorldToViewportPoint(Character[Zied.Main.AimPart].Position)
+                    if IsVisible then
+                        local Distance = (CenterPosition - Vector2.new(Position.X, Position.Y)).Magnitude
+                        if Distance < ClosestDistance then
+                            ClosestPlayer = Character[Zied.Main.AimPart]
+                            ClosestDistance = Distance
+                        end
+                    end
+                end
+            end
+        end
+    end
+    return ClosestPlayer
+end
+
+local enemy = nil
+
+RunService.Heartbeat:Connect(function()
+    if CamlockState and enemy then
+        local camera = workspace.CurrentCamera
+        camera.CFrame = CFrame.new(camera.CFrame.p, enemy.Position + Vector3.new(
+            enemy.Velocity.X * Zied.Main.HorizontalPrediction,
+            enemy.Velocity.Y * Zied.Main.VerticalPrediction,
+            enemy.Velocity.Z * Zied.Main.Prediction
+        ))
+    end
+end)
+
+RunService.Heartbeat:Connect(function()
+    if AutoAirState and enemy then
+        if enemy.Velocity.Y > 30 then
+            task.wait(Zied.Misc.AirDelay)
+            local Character = LocalPlayer.Character
+            if Character then
+                local Tool = Character:FindFirstChildOfClass("Tool")
+                if Tool then
+                    Tool:Activate()
+                end
+            end
+        end
+    end
+end)
+
+-- UI Setup
+local ZiedUI = Instance.new("ScreenGui")
+local CamlockButton = Instance.new("TextButton")
+local AutoAirButton = Instance.new("TextButton")
+local SpeedButton = Instance.new("TextButton")
+
+ZiedUI.Name = "Zied V3"
+ZiedUI.Parent = game.CoreGui
+ZiedUI.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+-- Z Lock Button
+CamlockButton.Parent = ZiedUI
+CamlockButton.Position = UDim2.new(0.05, 0, 0.2, 0)
+CamlockButton.Size = UDim2.new(0, 120, 0, 50)
+CamlockButton.Text = "Z LOCK [OFF]"
+CamlockButton.Font = Enum.Font.GothamBold
+CamlockButton.TextSize = 20
+CamlockButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- Black
+CamlockButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+CamlockButton.BorderSizePixel = 2
+CamlockButton.BorderColor3 = Color3.fromRGB(255, 255, 255)
+CamlockButton.Active = true
+CamlockButton.Draggable = true
+
+CamlockButton.MouseButton1Click:Connect(function()
+    CamlockState = not CamlockState
+    if CamlockState then
+        CamlockButton.Text = "Z LOCK [ON]"
+        enemy = FindNearestEnemy()
+        if enemy then
+            Notify("Zied", "Locked on " .. Players:GetPlayerFromCharacter(enemy.Parent).DisplayName)
+        end
+    else
+        CamlockButton.Text = "Z LOCK [OFF]"
+        Notify("Zied", "Unlocked")
+        enemy = nil
+    end
+end)
+
+-- Auto Air Button
+AutoAirButton.Parent = ZiedUI
+AutoAirButton.Position = UDim2.new(0.05, 0, 0.3, 0)
+AutoAirButton.Size = UDim2.new(0, 120, 0, 50)
+AutoAirButton.Text = "AUTO AIR [OFF]"
+AutoAirButton.Font = Enum.Font.GothamBold
+AutoAirButton.TextSize = 20
+AutoAirButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- Black
+AutoAirButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+AutoAirButton.BorderSizePixel = 2
+AutoAirButton.BorderColor3 = Color3.fromRGB(255, 255, 255)
+AutoAirButton.Active = true
+AutoAirButton.Draggable = true
+
+AutoAirButton.MouseButton1Click:Connect(function()
+    AutoAirState = not AutoAirState
+    AutoAirButton.Text = AutoAirState and "AUTO AIR [ON]" or "AUTO AIR [OFF]"
+end)
+
+-- Speed Button
+SpeedButton.Parent = ZiedUI
+SpeedButton.Position = UDim2.new(0.05, 0, 0.4, 0)
+SpeedButton.Size = UDim2.new(0, 120, 0, 50)
+SpeedButton.Text = "SPEED [OFF]"
+SpeedButton.Font = Enum.Font.GothamBold
+SpeedButton.TextSize = 20
+SpeedButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- Black
+SpeedButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+SpeedButton.BorderSizePixel = 2
+SpeedButton.BorderColor3 = Color3.fromRGB(255, 255, 255)
+SpeedButton.Active = true
+SpeedButton.Draggable = true
+
+SpeedButton.MouseButton1Click:Connect(function()
+    SpeedState = not SpeedState
+    SpeedButton.Text = SpeedState and "SPEED [ON]" or "SPEED [OFF]"
+    
+    local Character = LocalPlayer.Character
+    if Character and Character:FindFirstChild("Humanoid") then
+        Character.Humanoid.WalkSpeed = SpeedState and Zied.Speed.SpeedValue or 16
+    end
+end)
+
+game:GetService("StarterGui"):SetCore("SendNotification", {
+    Title = "Zied.lua Loaded",
+    Text = "Made by justnotzied | discord"
+})
