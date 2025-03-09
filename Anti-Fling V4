@@ -1,4 +1,4 @@
-```game.StarterGui:SetCore("ChatMakeSystemMessage", {
+game.StarterGui:SetCore("ChatMakeSystemMessage", {
                    Text = "You were flung. Neutralizing velocity.";
                    Color = Color3.fromRGB(255, 0, 0);
                })
@@ -6,4 +6,4 @@
                LastPosition = PrimaryPart.CFrame
            end
        end)
-    end)```
+    end
